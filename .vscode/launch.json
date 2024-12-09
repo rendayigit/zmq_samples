@@ -2,10 +2,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Sim",
+            "name": "Server",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/bin/server",
+            "args": [],
+            "cwd": "${workspaceFolder}/bin/"
+        },
+        {
+            "name": "Client",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/client",
             "args": [],
             "cwd": "${workspaceFolder}/bin/"
         }

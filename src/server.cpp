@@ -1,5 +1,6 @@
 #include <fstream>
 #include <iostream>
+#include <nlohmann/json.hpp>
 #include <streambuf>
 #include <string>
 #include <thread>
@@ -13,6 +14,7 @@ static std::ostringstream local;
 void publisherThread() {
   while (true) {
     try {
+      // Simple publish
       publisher.send(zmq::str_buffer("A"), zmq::send_flags::sndmore);
       publisher.send(zmq::str_buffer("Message in A envelope"));
 
@@ -25,6 +27,15 @@ void publisherThread() {
       publisher.send(zmq::str_buffer("C"), zmq::send_flags::sndmore);
       publisher.send(zmq::str_buffer("Message in C envelope"));
 
+      // Publish a JSON message
+      publisher.send(zmq::str_buffer("JSON"), zmq::send_flags::sndmore);
+      nlohmann::json request;
+      request["a"] = 123;
+      std::string jsonStr = request.dump();
+      zmq::message_t jsonMessage(jsonStr.data(), jsonStr.size());
+      publisher.send(jsonMessage, zmq::send_flags::none);
+
+      // Publish terminal standard outputs
       if (not local.str().empty()) {
         publisher.send(zmq::str_buffer("TERMINAL"), zmq::send_flags::sndmore);
         zmq::message_t message(local.str().data(), local.str().size());
@@ -41,6 +52,7 @@ void publisherThread() {
 
 void counterThread() {
   while (true) {
+    // Populate terminal standard outputs
     std::cout << counter++ << std::endl;
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }

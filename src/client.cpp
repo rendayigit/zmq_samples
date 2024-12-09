@@ -14,7 +14,12 @@ int main() {
 
   // Subscribe to A envelope
   subscriber.set(zmq::sockopt::subscribe, "A");
+
+  // Subscribe to TERMINAL envelope
   subscriber.set(zmq::sockopt::subscribe, "TERMINAL");
+
+  // Subscribe to JSON envelope
+  subscriber.set(zmq::sockopt::subscribe, "JSON");
 
   while (true) {
     // Receive all parts of the message
@@ -23,11 +28,12 @@ int main() {
     assert(result && "recv failed");
     assert(*result == 2);
 
-    std::cout << "Client received: [" << recvMsgs[0].to_string() << "] " << recvMsgs[1].to_string() << std::endl;
+    std::cout << "Client received: " << std::endl;
+    for (auto &message : recvMsgs) {
+      std::cout << message.to_string() << std::endl;
+    }
 
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
-    // subscriber.send(zmq::str_buffer("OK!"), zmq::send_flags::dontwait);
   }
 
   return 0;
