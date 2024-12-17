@@ -28,6 +28,9 @@ int main() {
   // Subscribe to JSON topic
   subscriber.set(zmq::sockopt::subscribe, "JSON");
 
+  // Subscribe to JSON topic
+  subscriber.set(zmq::sockopt::subscribe, "MANUAL");
+
   while (true) {
     // Receive all parts of the message
     std::vector<zmq::message_t> recvMsgs;
@@ -36,7 +39,8 @@ int main() {
     assert(*result == 2);
 
     std::cout << "\n>>> client received: " << std::endl;
-    std::cout << ">>> TOPIC: " << recvMsgs.at(0).to_string() << ", MESSAGE: " << recvMsgs.at(1).to_string() << std::endl;
+    std::cout << ">>> TOPIC: " << recvMsgs.at(0).to_string() << ", MESSAGE: " << recvMsgs.at(1).to_string()
+              << std::endl;
 
     std::this_thread::sleep_for(std::chrono::milliseconds(THREAD_SLEEP_DURATION));
   }
